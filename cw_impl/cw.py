@@ -203,7 +203,7 @@ class L2Adversary(object):
         self.binary_search_steps = search_steps
         self.max_steps = max_steps
         self.abort_early = abort_early
-        self.ae_tol = 1e-4  # tolerance of early abort
+        self.ae_tol = 1e-3  # tolerance of early abort
         self.box = tuple(map(float, box))  # type: Tuple[float, float]
         self.optimizer_lr = optimizer_lr
 
