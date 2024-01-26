@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 from torch.utils.data import Dataset
 
 
@@ -25,14 +26,15 @@ class AdversarialDataset(Dataset):
 
         image = plt.imread(img_path)
 
-        noise = np.random.normal(0, 1, image.shape)
-        # with open(img_path, 'rb') as f:
-        #     noise = np.load(f)
+        # noise = np.random.normal(0, 1, image.shape)
+        noise_path = os.path.join(self.noise_dir, self.images[idx] + ".npy")
+        with open(noise_path, 'rb') as f:
+            noise = np.load(f)
+            noise = torch.Tensor(noise)
 
         if self.img_transform:
             image = self.img_transform(image)
 
-        if self.noise_transform:
-            noise = self.noise_transform(noise)
+        assert noise.shape == image.shape
 
         return image, noise, self.labels[idx] - 1, self.targets[idx] - 1, self.images[idx]
