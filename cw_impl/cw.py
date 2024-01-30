@@ -377,7 +377,7 @@ class L2Adversary(object):
 
         if not to_numpy:
             o_best_advx = torch.from_numpy(o_best_advx).float()
-        return o_best_advx, o_best_l2, o_best_l2_ppred
+        return o_best_advx
 
     def _optimize(self, model, optimizer, inputs_tanh_var, pert_tanh_var,
                   targets_oh_var, c_var):

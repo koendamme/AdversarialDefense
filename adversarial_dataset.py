@@ -26,15 +26,17 @@ class AdversarialDataset(Dataset):
 
         image = plt.imread(img_path)
 
-        # noise = np.random.normal(0, 1, image.shape)
-        noise_path = os.path.join(self.noise_dir, self.images[idx] + ".npy")
-        with open(noise_path, 'rb') as f:
-            noise = np.load(f)
-            noise = torch.Tensor(noise)
+        if self.noise_dir is not None:
+            noise_path = os.path.join(self.noise_dir, self.images[idx] + ".npy")
+            with open(noise_path, 'rb') as f:
+                noise = np.load(f)
+                noise = torch.Tensor(noise)
 
-        if self.img_transform:
-            image = self.img_transform(image)
+            if self.img_transform:
+                image = self.img_transform(image)
 
-        assert noise.shape == image.shape
+            assert noise.shape == image.shape
+        else:
+            noise = None
 
         return image, noise, self.labels[idx] - 1, self.targets[idx] - 1, self.images[idx]
