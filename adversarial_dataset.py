@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 
 
 class AdversarialDataset(Dataset):
-    def __init__(self, annotation_file, categories_file, img_dir, noise_dir, img_transform=None, noise_transform=None):
+    def __init__(self, annotation_file, categories_file, img_dir, noise_dir=None, img_transform=None, noise_transform=None):
         self.img_dir = img_dir
         self.noise_dir = noise_dir
         annotations = pd.read_csv(annotation_file)
@@ -27,13 +27,19 @@ class AdversarialDataset(Dataset):
         image = plt.imread(img_path)
 
         # noise = np.random.normal(0, 1, image.shape)
-        noise_path = os.path.join(self.noise_dir, self.images[idx] + ".npy")
-        with open(noise_path, 'rb') as f:
-            noise = np.load(f)
-            noise = torch.Tensor(noise)
+        if self.noise_dir is not None:
+            noise_path = os.path.join(self.noise_dir, self.images[idx] + ".npy")
+            with open(noise_path, 'rb') as f:
+                noise = np.load(f)
+                noise = torch.Tensor(noise)
+        else:
+            noise = np.zeros(image.shape)
 
         if self.img_transform:
             image = self.img_transform(image)
+
+        if self.noise_transform:
+            noise = self.noise_transform(noise)
 
         assert noise.shape == image.shape
 
